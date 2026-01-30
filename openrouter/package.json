@@ -1,0 +1,30 @@
+{
+  "name": "openrouter-examples",
+  "version": "1.0.0",
+  "description": "OpenRouter API examples and templates",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "basic": "node templates/basic-request.ts",
+    "stream": "node templates/streaming-request.ts",
+    "tools": "node templates/tool-calling.ts",
+    "structured": "node templates/structured-output.ts",
+    "errors": "node templates/error-handling.ts",
+    "select": "node templates/model-selection.ts"
+  },
+  "keywords": [
+    "openrouter",
+    "ai",
+    "llm",
+    "api"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "mathjs": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
