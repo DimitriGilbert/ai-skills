@@ -1,0 +1,96 @@
+# Task 1: Documentation Deep Dive Analysis
+
+You are a specialist in analyzing documentation and extracting actionable information. Your task is to thoroughly analyze all documentation files in the Better-T-Stack CLI repository to create comprehensive documentation for skill creation.
+
+## Context
+I am researching the Better-T-Stack CLI tool to create comprehensive documentation for skill creation. The repository is located at https://github.com/AmanVarshney01/create-better-t-stack and has been cloned to /home/didi/workspace/Code/skills/.search-data/better-t-stack/repo/.
+
+## Your Mission
+
+Read and analyze ALL documentation files in `apps/web/content/docs/` and extract:
+1. Main topics covered in each file
+2. Key configuration options mentioned
+3. Usage patterns and examples
+4. Best practices
+5. Common workflows
+6. Edge cases and special considerations
+
+## Files to Analyze
+
+Main Documentation:
+- index.mdx
+- bts-config.mdx (already read - reference this)
+- project-structure.mdx
+- faq.mdx
+- contributing.mdx
+- analytics.mdx
+
+CLI Documentation:
+- cli/index.mdx (already read - reference this)
+- cli/options.mdx (already read - reference this)
+- cli/compatibility.mdx (already read - reference this)
+- cli/prompts.mdx
+- cli/programmatic-api.mdx
+
+Guides:
+- guides/index.mdx
+- guides/cloudflare-alchemy.mdx
+
+## Deliverables
+
+Create TWO comprehensive markdown files in `.search-data/better-t-stack/`:
+
+### 1. best-practices.md
+
+Structure your document with these sections:
+- Choosing the Right Stack (For Full-Stack Apps, Backend-Only, Frontend-Only, Native Apps)
+- Configuration Management (bts.jsonc Management, Environment Variables, Project Updates)
+- Usage Patterns (init vs add Commands, Workflow Patterns, Common Workflows)
+- Development Practices (Testing, Deployment, Maintenance)
+- Performance Considerations (Runtime Selection, Database Selection, Addon Selection)
+- Security Best Practices (Authentication Setup, Database Security, Deployment Security)
+
+### 2. common-patterns.md
+
+Structure your document with these sections:
+- Init Command Patterns (Standard Full-Stack Setup, Minimal Setup, Multi-Frontend Setup)
+- Add Command Patterns (Adding Addons, Adding Deployment, Updating Configuration)
+- Stack Combinations (Recommended Combinations, Common Use Cases, Example Stacks)
+- Workflow Patterns (Development Workflow, Testing Workflow, Deployment Workflow)
+
+## Critical Requirements
+
+1. **ALWAYS reference your sources** - Include the specific file path for every piece of information (e.g., "Source: apps/web/content/docs/cli/options.mdx, line 45-60")
+2. **Provide concrete examples** - Include actual command examples and code snippets from the documentation
+3. **Be comprehensive** - Don't miss any important information
+4. **Organize logically** - Make it easy to find information
+5. **Use markdown properly** - Use headers, lists, code blocks, and tables effectively
+6. **Cross-reference** - Link between sections when relevant
+
+## Research Sources
+
+- Repository: https://github.com/AmanVarshney01/create-better-t-stack
+- Local clone: /home/didi/workspace/Code/skills/.search-data/better-t-stack/repo/
+- Documentation directory: apps/web/content/docs/
+
+## How to Proceed
+
+1. Navigate to the cloned repository
+2. Read each documentation file carefully using the Read tool
+3. Extract key information for each file
+4. Organize the information according to the deliverable structures
+5. Save your findings to the specified files
+6. Reference all sources with specific file paths
+
+## Quality Checklist
+
+Before submitting, verify:
+- [ ] All documentation files have been read
+- [ ] Both deliverable files are complete
+- [ ] Every claim has a source reference
+- [ ] Concrete examples are included
+- [ ] Information is well-organized
+- [ ] Markdown formatting is correct
+- [ ] No critical information is missing
+
+Focus on information that would be useful for creating a skill - practical, actionable, and comprehensive.
