@@ -13,6 +13,8 @@ Orchestrate complex development workflows across multiple subagents with strict 
 
 **YOU ARE THE ORCHESTRATOR**: You execute the plan by dispatching subagents through natural language. There is no code running this - you make all decisions about when to dispatch implementers, validators, and fixers based on the workflow described below.
 
+**🚨 CRITICAL**: As the orchestrator, you NEVER write or generate code yourself. You ALWAYS dispatch implementers with the COMPLETE plan requirements and instructions on which part to proceed with.
+
 ## Execution Model
 
 **YOU execute this workflow** by dispatching subagents at each step:
@@ -26,8 +28,8 @@ User validates and approves plan
   ▼
 YOU execute each phase:
   ├─ For each phase:
-  │   ├─ YOU dispatch IMPLEMENTER subagent
-  │   ├─ YOU dispatch VALIDATOR subagent (different one!)
+  │   ├─ YOU dispatch IMPLEMENTER subagent with COMPLETE requirements
+  │   ├─ YOU dispatch VALIDATOR subagent (different one!) to READ and REVIEW code
   │   ├─ If validation FAILS:
   │   │   ├─ YOU dispatch FIXER subagent
   │   │   ├─ YOU dispatch VALIDATOR again
@@ -39,7 +41,7 @@ YOU execute each phase:
       └─ YOU report completion to user
 ```
 
-"Automatic" means you execute all phases without stopping to ask the user - not that code runs this.
+**Important**: "Automatic" means you execute all phases without stopping to ask the user - not that code runs this. YOU (the orchestrator) make all decisions and dispatch all subagents through natural language, but you NEVER write or generate code yourself.
 
 ## Quick Start
 
@@ -86,37 +88,63 @@ After all phases complete:
 **Your execution**:
 
 1. **Phase 1: Database Schema**
-   - Dispatch implementer: "Create schema.ts with tasks table"
-   - Implementer creates file
-   - Dispatch validator: "Check schema, run type check"
-   - Validator: PASS ✓
+    - Dispatch implementer with COMPLETE requirements: "Create src/db/schema.ts with tasks table following these exact requirements [paste complete requirements from plan]"
+    - Implementer creates file
+    - Dispatch validator: "Read and REVIEW src/db/schema.ts to verify all requirements are met, then run type check"
+    - Validator: PASS ✓
 
 2. **Phase 2: Database Client**
-   - Dispatch implementer: "Create client.ts using schema"
-   - Implementer creates file
-   - Dispatch validator: "Check client, verify connection logic"
-   - Validator: FAIL (missing error handling)
-   - Dispatch fixer: "Add error handling per validator report"
-   - Dispatch validator again
-   - Validator: PASS ✓
+    - Dispatch implementer with COMPLETE requirements: "Create src/db/client.ts using schema, following these exact requirements [paste complete requirements from plan]"
+    - Implementer creates file
+    - Dispatch validator: "ACTUALLY READ src/db/client.ts to verify all requirements are met, check error handling is correct, then run type check and build"
+    - Validator: FAIL (missing error handling in connection logic)
+    - Dispatch fixer: "Add error handling per validator report"
+    - Dispatch validator again
+    - Validator: PASS ✓
 
 3. **Phase 3: Services (Parallel)**
-   - Dispatch 3 implementers simultaneously:
-     - Create task.service.ts
-     - Create user.service.ts
-     - Create auth.service.ts
-   - Validate each independently → all PASS ✓
-   - Integration check (type check + build all together) → PASS ✓
+    - Dispatch 3 implementers simultaneously with COMPLETE requirements:
+      - Implementer A: "Create task.service.ts following these exact requirements [paste from plan]"
+      - Implementer B: "Create user.service.ts following these exact requirements [paste from plan]"
+      - Implementer C: "Create auth.service.ts following these exact requirements [paste from plan]"
+    - Validate each independently (each validator READS the code) → all PASS ✓
+    - Integration check (type check + build all together) → PASS ✓
 
 4. **Phase 4: API Routes**
-   - Dispatch implementer: "Create routes using services"
-   - Validator: PASS ✓
+    - Dispatch implementer with COMPLETE requirements: "Create API routes using services, following these exact requirements [paste from plan]"
+    - Dispatch validator: "ACTUALLY READ all route files to verify requirements are met, then run type check and build"
+    - Validator: PASS ✓
 
 **Result**: Report to user "All 4 phases complete, 1 fix iteration in Phase 2"
 
 This took 4 phases, 1 parallel phase, 1 fix loop - all executed without asking user.
 
 ## Critical Rules
+
+### 🚨 CRITICAL: Orchestrator Code Generation Rule
+
+**THE ORCHESTRATOR MUST NEVER WRITE OR GENERATE CODE**
+
+The orchestrator's job is to:
+- Dispatch subagents with the COMPLETE plan requirements
+- Provide clear instructions on which part/phase to work on
+- Coordinate the workflow and track progress
+- **NOT write, modify, or generate any code yourself**
+
+If you need code written, dispatch an implementer subagent with the complete requirements.
+
+### 🚨 CRITICAL: Validator Code Review Rule
+
+**THE VALIDATOR MUST ACTUALLY READ AND VALIDATE THE CODE**
+
+The validator's job is to:
+- **Read and understand every line of code created/modified**
+- **Manually verify each requirement from the plan is met**
+- Check code quality, patterns, and implementation details
+- **NOT just run validation commands (typecheck, build, tests)**
+- Report specific issues with file paths and line numbers
+
+Running validation commands is important, but it's NOT enough. You MUST ACTUALLY REVIEW THE CODE by reading through it and verifying requirements.
 
 ### Rule 1: Strict Role Separation
 
@@ -125,7 +153,7 @@ This took 4 phases, 1 parallel phase, 1 fix loop - all executed without asking u
 | Role            | Does                                        | Does NOT                |
 | --------------- | ------------------------------------------- | ----------------------- |
 | **Implementer** | Creates files, writes code                  | Validate their own work |
-| **Validator**   | Checks implementation, runs typecheck/build | Modify code             |
+| **Validator**   | **Reads code**, checks implementation, runs typecheck/build | Modify code             |
 | **Fixer**       | Repairs issues found by validator           | Validate the fix        |
 
 ### Rule 2: Complete Execution
@@ -141,8 +169,8 @@ Once user approves plan:
 
 For each phase:
 
-1. Implementer creates the work
-2. Validator checks the work
+1. Dispatch implementer → create/modify files
+2. Dispatch validator → **ACTUALLY READ AND REVIEW** the code, check requirements, run tests
 3. If validation PASSES → phase complete, continue
 4. If validation FAILS:
    - Dispatch fixer with validator report
@@ -155,9 +183,26 @@ Use the templates in [references/subagent-templates.md](references/subagent-temp
 
 **Quick reference**:
 
-- **Implementer**: Gets phase requirements, creates/modifies files, does NOT validate
-- **Validator**: Gets implementation + requirements, checks thoroughly, does NOT modify code
+- **Implementer**: Gets **COMPLETE** phase requirements from plan, creates/modifies files, does NOT validate
+- **Validator**: Gets implementation + requirements, **ACTUALLY READS AND REVIEWS** the code thoroughly, runs typecheck/build/tests, does NOT modify code
 - **Fixer**: Gets validator report, fixes all issues, does NOT validate
+
+### When dispatching implementers:
+
+ALWAYS provide:
+1. **The COMPLETE requirements section from the plan** (not a summary)
+2. **Specific instructions on which part/phase to proceed with**
+3. **List of files to read** for context
+4. **List of files to create/modify**
+5. **Clear boundaries** - what they should and should NOT do
+
+### When dispatching validators:
+
+ALWAYS provide:
+1. **Files that were created/modified** (complete list)
+2. **The COMPLETE requirements section from the plan**
+3. **Validation criteria** (typecheck, build, code review)
+4. **Instruction to ACTUALLY READ the code**, not just run commands
 
 **Example dispatch** (see templates for full format):
 
@@ -350,11 +395,21 @@ Validation should be adapted to the project's language and tooling, not limited 
 3. YOU continue through all phases without user input
 4. YOU report results at the end
 
-**Key rules**:
+**🚨 CRITICAL RULES - READ CAREFULLY**:
 
-- Strict role separation: implementer ≠ validator ≠ fixer
-- Auto-retry fixes up to 3 validation attempts per phase
-- Halt only on max retry failures or environment issues
+1. **YOU (orchestrator) MUST NEVER WRITE OR GENERATE CODE**
+   - Always dispatch implementers with COMPLETE plan requirements
+   - Give clear instructions on which part/phase to work on
+   - Your job is coordination, not coding
+
+2. **Validators MUST ACTUALLY READ AND VALIDATE THE CODE**
+   - Reading code line-by-line is REQUIRED
+   - Running commands alone is NOT sufficient
+   - Manual verification of each requirement is mandatory
+
+3. **Strict role separation**: implementer ≠ validator ≠ fixer
+4. **Auto-retry fixes** up to 3 validation attempts per phase
+5. **Halt only** on max retry failures or environment issues
 
 ## Reference Documentation
 
