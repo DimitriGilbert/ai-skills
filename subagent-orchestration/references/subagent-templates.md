@@ -503,7 +503,7 @@ Tell fixer: "Fix ALL issues, not just some"
 
 Provide enough context that the subagent can work independently.
 
-### 5. Request Detailed Reports
+### 5. Request Detailed Reports/
 
 Ask for specific confirmation of what was done, not just "done."
 

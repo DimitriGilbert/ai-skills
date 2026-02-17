@@ -1,0 +1,123 @@
+# Finding Schema - Complete YAML structure for review findings
+
+# Root structure
+findings:
+  - id: "[area]-[sequential-number]"
+    type: "[type]"
+    severity: "[severity]"
+    title: "[brief description]"
+    status: "[open|in_progress|fixed|wont_fix]"
+    
+    # Location
+    file: "[path/to/file]"
+    line: [start_line]
+    line_end: [end_line]  # Optional, for multi-line issues
+    function: "[function_name]"  # Optional
+    
+    # Description
+    description: |
+      [Detailed explanation of the issue]
+      Can span multiple lines.
+    evidence: |
+      [Code snippet showing the issue]
+      ```language
+      code here
+      ```
+    
+    # Impact assessment
+    impact:
+      user_facing: [true|false]
+      description: "[what happens if not fixed]"
+      affected_users: "[estimate or 'all' or 'edge_case']"
+    
+    # Fix plan
+    fix:
+      approach: "[high-level strategy]"
+      steps:
+        - "[step 1]"
+        - "[step 2]"
+        - "[step 3]"
+      code_example: |
+        [Optional: example of fixed code]
+      effort: "[low|medium|high]"
+      risk: "[low|medium|high]"  # Risk of fix breaking something
+    
+    # References
+    references:
+      - type: "[url|doc|issue|pr]"
+        value: "[link or reference]"
+    
+    # Metadata
+    discovered_at: "[timestamp]"
+    area: "[area name]"
+    reviewer: "[agent type]"
+
+# Enumerations
+
+## type values
+types:
+  - security: "Auth, injection, exposure, permissions issues"
+  - quality: "Code structure, patterns, duplication"
+  - performance: "Speed, memory, scalability issues"
+  - correctness: "Logic errors, wrong behavior"
+  - maintainability: "Documentation, complexity, tests"
+  - accessibility: "A11y compliance, screen readers"
+
+## severity values
+severities:
+  - critical: "Security breach, data loss, system down"
+  - high: "Feature broken, security risk, major perf issue"
+  - medium: "Feature degraded, quality issue, minor security"
+  - low: "Code smell, minor bug with workaround"
+  - nitpick: "Style, minor improvement"
+
+## status values
+statuses:
+  - open: "Not yet addressed"
+  - in_progress: "Being worked on"
+  - fixed: "Resolved"
+  - wont_fix: "Accepted as-is"
+  - needs_discussion: "Requires team decision"
+
+# Example finding
+
+example:
+  findings:
+    - id: "auth-001"
+      type: "security"
+      severity: "critical"
+      title: "SQL injection in user search"
+      status: "open"
+      file: "src/api/users.ts"
+      line: 45
+      function: "searchUsers"
+      description: |
+        User-supplied input is directly interpolated into SQL query
+        without sanitization, allowing arbitrary SQL execution.
+      evidence: |
+        ```typescript
+        const query = `SELECT * FROM users WHERE name LIKE '%${searchTerm}%'`;
+        ```
+      impact:
+        user_facing: true
+        description: "Attacker can read/modify any database data"
+        affected_users: "all"
+      fix:
+        approach: "Use parameterized queries"
+        steps:
+          - "Replace string interpolation with parameterized query"
+          - "Add input validation for search term"
+          - "Add integration test for SQL injection attempts"
+        code_example: |
+          ```typescript
+          const query = 'SELECT * FROM users WHERE name LIKE $1';
+          const result = await db.query(query, [`%${searchTerm}%`]);
+          ```
+        effort: "low"
+        risk: "low"
+      references:
+        - type: "url"
+          value: "https://owasp.org/www-community/attacks/SQL_Injection"
+      discovered_at: "2024-01-15T10:30:00Z"
+      area: "auth-flow"
+      reviewer: "code-reviewer"

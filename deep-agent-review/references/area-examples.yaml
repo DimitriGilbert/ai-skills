@@ -1,0 +1,176 @@
+# Area Examples - Semantic area patterns for different codebase types
+
+# E-commerce / Marketplace
+ecommerce:
+  areas:
+    - name: "product-catalog"
+      description: "Product listing, search, filtering, categories"
+      paths: ["**/product*", "**/catalog*", "**/search*"]
+      focus: ["Search performance", "Filter correctness", "Pagination"]
+      specialist: "backend-security-coder"
+      
+    - name: "cart-checkout"
+      description: "Shopping cart, checkout flow, order creation"
+      paths: ["**/cart*", "**/checkout*", "**/order*"]
+      focus: ["Price calculations", "Inventory checks", "Payment integration"]
+      specialist: "code-reviewer"
+      
+    - name: "payment-processing"
+      description: "Payment gateway integration, transactions"
+      paths: ["**/payment*", "**/transaction*", "**/stripe*"]
+      focus: ["Security", "Error handling", "Idempotency"]
+      specialist: "backend-security-coder"
+      
+    - name: "user-accounts"
+      description: "Registration, auth, profile management"
+      paths: ["**/user*", "**/auth*", "**/account*"]
+      focus: ["Auth security", "Data privacy", "Session management"]
+      specialist: "backend-security-coder"
+      
+    - name: "admin-dashboard"
+      description: "Admin features, order management, reporting"
+      paths: ["**/admin*", "**/dashboard*"]
+      focus: ["Access control", "Audit logging", "Bulk operations"]
+      specialist: "code-reviewer"
+
+# Gaming Platform
+gaming:
+  areas:
+    - name: "game-lifecycle"
+      description: "Game creation, state management, publishing"
+      paths: ["**/game*", "**/lifecycle*", "**/publish*"]
+      focus: ["State transitions", "Publishing flow", "Game validation"]
+      specialist: "code-reviewer"
+      
+    - name: "leaderboard-system"
+      description: "Scoring, ranking, leaderboards"
+      paths: ["**/leaderboard*", "**/score*", "**/rank*"]
+      focus: ["Score calculation", "Ranking algorithms", "Real-time updates"]
+      specialist: "backend-security-coder"
+      
+    - name: "multiplayer-sync"
+      description: "Real-time game state synchronization"
+      paths: ["**/multiplayer*", "**/sync*", "**/websocket*"]
+      focus: ["Latency handling", "Conflict resolution", "Cheating prevention"]
+      specialist: "backend-security-coder"
+      
+    - name: "arcade-ui"
+      description: "Game browsing, playing interface"
+      paths: ["**/arcade*", "**/play*", "**/browse*"]
+      focus: ["UX flow", "Game loading", "Error states"]
+      specialist: "frontend-developer"
+
+# SaaS Application
+saas:
+  areas:
+    - name: "tenant-management"
+      description: "Multi-tenancy, organization handling"
+      paths: ["**/tenant*", "**/organization*", "**/workspace*"]
+      focus: ["Data isolation", "Tenant switching", "Billing per tenant"]
+      specialist: "architect-review"
+      
+    - name: "subscription-billing"
+      description: "Plans, subscriptions, invoices"
+      paths: ["**/subscription*", "**/billing*", "**/invoice*"]
+      focus: ["Billing cycles", "Proration", "Payment failures"]
+      specialist: "code-reviewer"
+      
+    - name: "api-rate-limiting"
+      description: "API quotas, throttling"
+      paths: ["**/rate*", "**/limit*", "**/quota*"]
+      focus: ["Rate limit accuracy", "Burst handling", "User experience"]
+      specialist: "backend-security-coder"
+      
+    - name: "integrations"
+      description: "Third-party integrations, webhooks"
+      paths: ["**/integration*", "**/webhook*", "**/sync*"]
+      focus: ["Auth with third parties", "Webhook security", "Retry logic"]
+      specialist: "code-reviewer"
+
+# Social Platform
+social:
+  areas:
+    - name: "feed-algorithm"
+      description: "Content feed, ranking, personalization"
+      paths: ["**/feed*", "**/timeline*", "**/recommend*"]
+      focus: ["Algorithm correctness", "Performance at scale", "Privacy"]
+      specialist: "backend-security-coder"
+      
+    - name: "messaging"
+      description: "Direct messages, conversations"
+      paths: ["**/message*", "**/chat*", "**/conversation*"]
+      focus: ["Real-time delivery", "Encryption", "Spam prevention"]
+      specialist: "backend-security-coder"
+      
+    - name: "notifications"
+      description: "Push notifications, email notifications"
+      paths: ["**/notification*", "**/push*", "**/email*"]
+      focus: ["Delivery reliability", "Unsubscribe handling", "Batching"]
+      specialist: "code-reviewer"
+      
+    - name: "content-moderation"
+      description: "Content filtering, reporting, moderation"
+      paths: ["**/moderation*", "**/report*", "**/filter*"]
+      focus: ["Filter effectiveness", "False positives", "Appeals process"]
+      specialist: "code-reviewer"
+
+# Cross-Cutting Concerns (apply to any codebase)
+cross_cutting:
+  - name: "authentication"
+    description: "Login, logout, session management"
+    affects: ["All user-facing areas"]
+    
+  - name: "error-handling"
+    description: "Error boundaries, error reporting"
+    affects: ["All areas"]
+    
+  - name: "logging-observability"
+    description: "Logs, metrics, traces"
+    affects: ["All areas"]
+    
+  - name: "data-validation"
+    description: "Input validation, sanitization"
+    affects: ["All API surfaces"]
+    
+  - name: "caching"
+    description: "Cache strategies, invalidation"
+    affects: ["Read-heavy areas"]
+
+# Incomplete/Broken Feature Detection
+broken_patterns:
+  - pattern: "endpoint_exists_not_called"
+    detection: "Route defined but no usages found"
+    example: "Publish endpoint exists but never invoked"
+    
+  - pattern: "missing_tests"
+    detection: "Feature code exists but no test coverage"
+    example: "Payment processing has no integration tests"
+    
+  - pattern: "todo_leftover"
+    detection: "TODO/FIXME comments in critical paths"
+    example: "TODO: Handle payment failure in checkout"
+    
+  - pattern: "dead_code"
+    detection: "Code that is never executed"
+    example: "Old migration scripts that are outdated"
+    
+  - pattern: "half_implemented"
+    detection: "Feature has UI but no backend, or vice versa"
+    example: "Admin UI for feature that doesn't exist in API"
+
+# Area Definition Template
+template:
+  name: "[area-name]"
+  description: "[what this area does and why it matters]"
+  paths:
+    - "[glob/pattern/**]"
+    - "[another/pattern/**]"
+  focus:
+    - "[specific concern 1]"
+    - "[specific concern 2]"
+    - "[specific concern 3]"
+  dependencies:
+    - "[other area this depends on]"
+  specialist: "[recommended agent type]"
+  priority: "[high|medium|low]"
+  estimated_files: [rough count]
