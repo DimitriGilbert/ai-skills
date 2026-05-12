@@ -29,13 +29,22 @@ User validates and approves plan
 YOU execute each phase:
   ├─ For each phase:
   │   ├─ YOU dispatch IMPLEMENTER subagent with COMPLETE requirements
+  │   ├─ IMPLEMENTER runs gatekeeping commands (typecheck, build, lint) BEFORE reporting done
   │   ├─ YOU dispatch VALIDATOR subagent (different one!) to READ and REVIEW code
   │   ├─ If validation FAILS:
   │   │   ├─ YOU dispatch FIXER subagent
+  │   │   ├─ FIXER runs gatekeeping commands BEFORE reporting done
   │   │   ├─ YOU dispatch VALIDATOR again
   │   │   └─ YOU REPEAT until validation PASSES (up to 3 attempts)
   │   └─ If validation PASSES:
   │       └─ YOU move to next phase
+  │
+  ├─ For MULTI-SUB-PHASE phases (phase split into multiple sub-phases):
+  │   ├─ Dispatch each sub-phase implementer (parallel or sequential)
+  │   ├─ Each implementer runs gatekeeping commands before reporting done
+  │   ├─ Dispatch PHASE-WIDE validator to read ALL sub-phase code together
+  │   ├─ Phase-wide validator checks integration, shared types, cross-sub-phase coherence
+  │   └─ Fix loop applies to phase-wide validation
   │
   └─ After all phases:
       └─ YOU report completion to user
@@ -152,11 +161,37 @@ Running validation commands is important, but it's NOT enough. You MUST ACTUALLY
 
 | Role            | Does                                        | Does NOT                |
 | --------------- | ------------------------------------------- | ----------------------- |
-| **Implementer** | Creates files, writes code                  | Validate their own work |
+| **Implementer** | Creates files, writes code, **runs gatekeeping commands** (typecheck, build) before reporting done | Skip gatekeeping checks |
 | **Validator**   | **Reads code**, checks implementation, runs typecheck/build | Modify code             |
-| **Fixer**       | Repairs issues found by validator           | Validate the fix        |
+| **Fixer**       | Repairs issues found by validator, **runs gatekeeping commands** before reporting done | Validate the fix        |
 
-### Rule 2: Complete Execution
+### Rule 2: Implementers MUST Run Gatekeeping Commands
+
+**Every implementer and fixer MUST run all gatekeeping commands (typecheck, build, etc.) on their own work BEFORE reporting completion.**
+
+This is NOT validation — it is basic quality control. Implementers must:
+1. Write the code
+2. Run typecheck, build, and any other project-appropriate gatekeeping commands
+3. Fix any errors found by those commands
+4. Only report "done" once all gatekeeping commands pass cleanly
+
+**Why**: No subagent should hand back broken code. Type errors and build failures are not acceptable deliverables. The validator's job is to review code quality and requirement compliance — not to catch basic compilation errors that the implementer should have caught themselves.
+
+### Rule 3: Phase-Wide Validation for Multi-Sub-Phase Phases
+
+**If a phase is split into multiple sub-phases with multiple implementers, a phase-wide validator run is MANDATORY after all sub-phases complete.**
+
+Flow for multi-sub-phase phases:
+1. Dispatch all sub-phase implementers (in parallel or sequence)
+2. Each implementer runs their own gatekeeping commands
+3. Dispatch individual validators for each sub-phase if desired (optional)
+4. **Dispatch a phase-wide validator** that reads ALL code from ALL sub-phases together
+5. The phase-wide validator checks: integration between sub-phases, shared types, imports, overall coherence
+6. Fix loop applies to the phase-wide validation
+
+**Why**: Individual sub-phase validators only check their slice. A phase-wide validator catches integration issues, mismatched interfaces, duplicate code, and inconsistencies across sub-phases that individual validators miss.
+
+### Rule 4: Complete Execution
 
 Once user approves plan:
 
@@ -165,7 +200,7 @@ Once user approves plan:
 - Only stop if a phase fails after max fix attempts (3)
 - Report final result to user
 
-### Rule 3: Validation Loop
+### Rule 5: Validation Loop
 
 For each phase:
 
@@ -195,6 +230,7 @@ ALWAYS provide:
 3. **List of files to read** for context
 4. **List of files to create/modify**
 5. **Clear boundaries** - what they should and should NOT do
+6. **Instruction to run gatekeeping commands** (typecheck, build) and fix any errors BEFORE reporting completion
 
 ### When dispatching validators:
 
@@ -250,8 +286,10 @@ Phase 3: API implementation
 Execute multiple sub-tasks simultaneously:
 
 - Dispatch all implementers at once
+- Each implementer runs gatekeeping commands before reporting done
 - Wait for all to complete
 - Validate each independently
+- **Run a phase-wide validator** that reads ALL sub-phase code together
 - Fix any failures
 - All must pass before continuing
 
@@ -260,9 +298,9 @@ Example:
 ```
 Phase 3: Core services (parallel)
   Dispatch simultaneously:
-    - Implementer A: Git manager
-    - Implementer B: Database manager
-    - Implementer C: Manifest manager
+    - Implementer A: Git manager (runs typecheck/build before done)
+    - Implementer B: Database manager (runs typecheck/build before done)
+    - Implementer C: Manifest manager (runs typecheck/build before done)
 
   Wait for all three to complete
 
@@ -272,6 +310,12 @@ Phase 3: Core services (parallel)
     - Validator C checks Manifest manager
 
   If any fail, fix that specific one
+
+  PHASE-WIDE VALIDATION (mandatory):
+    - Validator D reads ALL three services together
+    - Checks: shared types, imports between services, interface consistency,
+      no duplicates, overall integration coherence
+    - If fails → fix loop on affected files
 
   All pass → continue to Phase 4
 ```
@@ -407,9 +451,13 @@ Validation should be adapted to the project's language and tooling, not limited 
    - Running commands alone is NOT sufficient
    - Manual verification of each requirement is mandatory
 
-3. **Strict role separation**: implementer ≠ validator ≠ fixer
-4. **Auto-retry fixes** up to 3 validation attempts per phase
-5. **Halt only** on max retry failures or environment issues
+3. **Implementers MUST run gatekeeping commands** (typecheck, build) on their own work BEFORE reporting done. No subagent should hand back broken code.
+
+4. **Multi-sub-phase phases MUST have a phase-wide validator** that reads ALL code from ALL sub-phases together, checking integration and coherence.
+
+5. **Strict role separation**: implementer ≠ validator ≠ fixer
+6. **Auto-retry fixes** up to 3 validation attempts per phase
+7. **Halt only** on max retry failures or environment issues
 
 ## Reference Documentation
 

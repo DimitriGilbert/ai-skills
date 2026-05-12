@@ -105,7 +105,7 @@ OUTPUT: .plans/session-[id]/draft-[your-name].md
 
 Include:
 - Summary and approach
-- Detailed phases with steps
+- Detailed phases with steps (must include phase type, requirements, inputs, outputs, validation criteria — see Orchestration Compatibility below)
 - Dependencies on other specialists
 - Risks and alternatives
 
@@ -197,20 +197,30 @@ See [consensus-criteria.md](references/consensus-criteria.md) for full algorithm
 
 ```
 ROLE: Master Planner
-MISSION: Combine refined plans into unified master plan.
+MISSION: Combine refined plans into unified master plan that is ready for subagent-orchestration.
 
 INPUTS: All refined plans, all reviews from final round
 OUTPUT: master-plan.md
 
+TEMPLATE: Use the Master Plan Template from references/plan-templates.md.
+It MUST produce a plan compatible with subagent-orchestration — every phase needs:
+- Type (Sequential/Parallel)
+- Specific, actionable requirements
+- Inputs (files to read) and Outputs (files to create/modify)
+- Validation criteria
+- Dependencies
+- Gatekeeping commands for the project (typecheck, build)
+- Phase-level Validation section for any parallel phase
+
 Include:
 - Executive summary
 - Consensus decisions
-- Specialist contributions by domain
-- Integrated plan (phases, owners, steps)
+- Integrated plan (orchestration-compatible phases)
 - Resolved conflicts
 - Open items
 - Combined risk assessment
 - Divergent views (if any)
+- Success criteria with gatekeeping commands
 ```
 
 ## File Structure
@@ -263,8 +273,60 @@ Final: Consensus level, divergent views (if any), output path.
 ## Integration
 
 - **deep-agent-review**: Use planificator to plan remediation after review
-- **subagent-orchestration**: Use master plan as input for implementation
+- **subagent-orchestration**: Master plan feeds directly into orchestration as input. See [Orchestration Compatibility](#orchestration-compatibility) below.
 - **the-council**: Council for decisions, Planificator for comprehensive plans
+
+## Orchestration Compatibility
+
+The master plan produced by this skill is the direct input for **subagent-orchestration**. The master plan MUST be structured so the orchestrator can dispatch implementers without ambiguity.
+
+### Required Plan Structure
+
+Every phase in the master plan MUST include:
+
+| Field | Required | Why |
+|-------|----------|-----|
+| Phase type (Sequential/Parallel) | Yes | Orchestrator dispatches parallel sub-phases simultaneously |
+| Requirements (specific, not vague) | Yes | Dispatched verbatim to implementers |
+| Inputs (files to read) | Yes | Implementers need context |
+| Outputs (files to create/modify) | Yes | Validators check these |
+| Validation criteria | Yes | Validators check against these |
+| Dependencies | Yes | Orchestrator enforces ordering |
+| Gatekeeping commands | Yes | Implementers must run typecheck/build before reporting done |
+
+### Parallel Phases
+
+If a phase has multiple sub-tasks that can run simultaneously:
+
+1. Mark it as **Type: Parallel**
+2. Define each sub-task with its own requirements, inputs, outputs, and validation
+3. Include a **Phase-level Validation** section for the mandatory phase-wide validator
+4. The phase-wide validator checks: integration between sub-phases, shared types, imports, no circular dependencies, overall coherence
+
+### Handoff Contract
+
+When the master plan is handed to the orchestrator:
+
+1. **Orchestrator reads the master plan** and extracts phases
+2. **Each phase's requirements section** is dispatched verbatim to implementers
+3. **Validation criteria** are given to validators
+4. **Implementers run gatekeeping commands** (typecheck, build) on their own before reporting done
+5. **Multi-sub-phase phases get a phase-wide validator** after individual validations pass
+
+This means the master plan must be **self-contained** — the orchestrator should never need to ask clarifying questions. If a requirement is vague, the plan is not ready.
+
+### Plan Checklist
+
+Before declaring the master plan complete, verify:
+
+- [ ] Every phase has a type (Sequential or Parallel)
+- [ ] Every phase has specific, actionable requirements (not "make it work")
+- [ ] Every phase lists exact files to create/modify
+- [ ] Every phase has explicit validation criteria
+- [ ] Every phase states its dependencies
+- [ ] Gatekeeping commands for the project are listed (typecheck, build)
+- [ ] Parallel phases have a Phase-level Validation section
+- [ ] No vague or ambiguous requirements remain
 
 ## Quick Reference
 

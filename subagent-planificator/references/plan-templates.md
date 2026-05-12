@@ -71,14 +71,31 @@ File: `.plans/session-[id]/draft-[specialist].md`
 ## Detailed Plan
 
 ### Phase 1: [Phase Name]
-**Duration:** [Estimate]
-**Dependencies:** [What's needed first]
+**Type:** [Sequential/Parallel]
+**Dependencies:** [What's needed first, or "None"]
+
+**Requirements**:
+- [Specific, actionable requirement]
+- [Specific, actionable requirement]
+
+**Inputs**:
+- Read: [files this phase needs as context]
+- Reference: [existing patterns to follow]
+
+**Outputs**:
+- Create: [files to create]
+- Modify: [files to modify]
+
+**Validation Criteria**:
+- Type check: Zero errors
+- Build: Success
+- [Phase-specific criteria]
 
 Steps:
 1. [Step 1]
    - Details: [More info]
    - Risk: [Any risks]
-   
+    
 2. [Step 2]
    - Details: [More info]
    - Risk: [Any risks]
@@ -263,6 +280,8 @@ File: `.plans/session-[id]/refined-[specialist]-round[N].md`
 
 File: `.plans/session-[id]/master-plan.md`
 
+This template produces a plan directly consumable by **subagent-orchestration**. Every phase must be self-contained with enough detail for an implementer subagent to execute without asking questions.
+
 ```markdown
 # Master Plan - [Topic]
 
@@ -271,6 +290,16 @@ File: `.plans/session-[id]/master-plan.md`
 - Created: [Timestamp]
 - Rounds: [N]
 - Consensus: [Full/Partial/None]
+
+## Prerequisites
+- Tools required (e.g., pnpm, TypeScript)
+- Files that must exist before starting
+- Environment setup needed
+
+## Gatekeeping Commands
+List the commands implementers must run before reporting done:
+- Type check: [e.g., `pnpm run check-types`]
+- Build: [e.g., `pnpm run build`]
 
 ## Executive Summary
 [3-5 sentences on the unified approach]
@@ -290,49 +319,108 @@ These decisions were agreed upon by all specialists:
 
 ### Overview Timeline
 ```
-Phase 1: [Name]     [Week 1-2]
-Phase 2: [Name]     [Week 3-4]
-Phase 3: [Name]     [Week 5-6]
+Phase 1: [Name]     [Sequential]
+Phase 2: [Name]     [Sequential]
+Phase 3: [Name]     [Parallel: Sub-task A, Sub-task B, Sub-task C]
+Phase 4: [Name]     [Sequential]
 ```
 
+---
+
 ### Phase 1: [Phase Name]
+**Type**: Sequential
 **Owner:** [Lead specialist]
-**Duration:** [Estimate]
-**Dependencies:** [Prerequisites]
+**Dependencies:** [Prerequisites, or "None" for first phase]
 
-Steps:
-1. [Step 1]
-   - Owner: [Specialist]
-   - Details: [More info]
-   - Validates: [How we know it worked]
+**Requirements**:
+- [Specific requirement 1]
+- [Specific requirement 2]
+- [Specific requirement 3]
 
-2. [Step 2]
-   [Same structure]
+**Inputs**:
+- Read: [file1.ts, file2.ts]
+- Reference: [existing patterns to follow]
+
+**Outputs**:
+- Create: [new-file1.ts, new-file2.ts]
+- Modify: [existing-file.ts]
+
+**Validation Criteria**:
+- Type check: Zero errors
+- Build: Success
+- [Specific criteria for this phase]
+
+---
 
 ### Phase 2: [Phase Name]
-[Same structure]
+**Type**: Sequential
+**Dependencies:** Phase 1 must complete
+
+[Same structure as Phase 1]
+
+---
 
 ### Phase 3: [Phase Name]
-[Same structure]
+**Type**: Parallel
+**Dependencies:** Phase 2 must complete
 
-## Specialist Domain Details
+#### 3.1: [Sub-task A Name]
+**Requirements**:
+- [Specific requirement 1]
+- [Specific requirement 2]
 
-### [Specialist A] Domain
-[Key points from their plan that apply to their domain]
+**Inputs**:
+- Read: [files]
 
-### [Specialist B] Domain
-[Key points from their plan]
+**Outputs**:
+- Create: [fileA1.ts, fileA2.ts]
 
-### [Specialist C] Domain
-[Key points from their plan]
+**Validation**:
+- [Criteria for sub-task A]
 
-## Cross-Domain Coordination
-[How specialists work together]
+#### 3.2: [Sub-task B Name]
+**Requirements**:
+- [Specific requirement 1]
+- [Specific requirement 2]
 
-| Handoff | From | To | Artifact |
-|---------|------|-----|----------|
-| [Handoff 1] | [A] | [B] | [What] |
-| [Handoff 2] | [B] | [C] | [What] |
+**Inputs**:
+- Read: [files]
+
+**Outputs**:
+- Create: [fileB1.ts, fileB2.ts]
+
+**Validation**:
+- [Criteria for sub-task B]
+
+#### 3.3: [Sub-task C Name]
+**Requirements**:
+- [Specific requirement 1]
+
+**Inputs**:
+- Read: [files]
+
+**Outputs**:
+- Create: [fileC1.ts]
+
+**Validation**:
+- [Criteria for sub-task C]
+
+**Phase-level Validation**:
+- All sub-tasks pass individual validation
+- Integration: Sub-tasks work together (shared types, imports)
+- No circular dependencies
+- Type check: Zero errors across all files
+- Build: Success
+
+---
+
+### Phase 4: [Phase Name]
+**Type**: Sequential
+**Dependencies:** Phase 3 must complete
+
+[Same structure as Phase 1]
+
+---
 
 ## Resolved Conflicts
 
@@ -361,14 +449,11 @@ Steps:
 | [Risk 2] | H/M/L | H/M/L | [Who] | [Strategy] |
 
 ## Success Criteria
-1. [Criterion 1]
-2. [Criterion 2]
-3. [Criterion 3]
 
-## Next Steps
-1. [Immediate next step]
-2. [Following step]
-3. [Following step]
+Overall success requires:
+- All phases complete and validate successfully
+- Gatekeeping commands pass: [typecheck command], [build command]
+- All requirements from all phases met
 
 ## Appendix
 
