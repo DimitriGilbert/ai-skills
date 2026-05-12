@@ -282,6 +282,8 @@ File: `.plans/session-[id]/master-plan.md`
 
 This template produces a plan directly consumable by **subagent-orchestration**. Every phase must be self-contained with enough detail for an implementer subagent to execute without asking questions.
 
+**Phase sizing rule**: Each phase must fit comfortably in a single agent's context window (~15 files max, ~500 lines of output max). If a phase is too large, split it into sub-phases with a phase-wide validator.
+
 ```markdown
 # Master Plan - [Topic]
 

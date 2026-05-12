@@ -292,7 +292,20 @@ Every phase in the master plan MUST include:
 | Outputs (files to create/modify) | Yes | Validators check these |
 | Validation criteria | Yes | Validators check against these |
 | Dependencies | Yes | Orchestrator enforces ordering |
-| Gatekeeping commands | Yes | Implementers must run typecheck/build before reporting done |
+| Gatekeeping commands | Yes | Implementers must run check-types/build before reporting done |
+
+### Phase Sizing — Must Fit in Agent Context
+
+**Every phase must fit comfortably inside a single agent's context window. If a phase is too large, it MUST be split into sub-phases.**
+
+A phase is too large if:
+- It creates or modifies more than ~15 files
+- Its requirements would produce more than ~500 lines of new code
+- It covers multiple unrelated concerns
+
+When a phase is too large, split it into focused sub-phases. Each sub-phase gets its own implementer → validator flow, followed by a phase-wide validator.
+
+**Why**: Agent context windows are finite. When context fills up, compaction discards earlier information and code quality drops precipitously — the agent loses track of patterns, conventions, and decisions made earlier. Smaller phases produce better code.
 
 ### Parallel Phases
 
@@ -324,9 +337,10 @@ Before declaring the master plan complete, verify:
 - [ ] Every phase lists exact files to create/modify
 - [ ] Every phase has explicit validation criteria
 - [ ] Every phase states its dependencies
-- [ ] Gatekeeping commands for the project are listed (typecheck, build)
+- [ ] Gatekeeping commands for the project are listed (check-types, build)
 - [ ] Parallel phases have a Phase-level Validation section
 - [ ] No vague or ambiguous requirements remain
+- [ ] Every phase fits in a single agent context (~15 files max, ~500 lines of code max). If not, it's split into sub-phases.
 
 ## Quick Reference
 

@@ -411,3 +411,20 @@ Dependencies: Phase 3 must complete (requires db client)
 4. **Be specific** - The more specific your requirements, the better the implementation
 5. **Include validation** - Every phase needs clear pass/fail criteria
 6. **Test the plan** - Read through and imagine executing it step by step
+7. **Size phases for agent context** - Each phase must fit comfortably in a single agent's context window. If a phase would create/modify more than ~15 files or produce more than ~500 lines of code, split it into sub-phases. Context compaction degrades quality severely.
+
+## Phase Sizing Guidelines
+
+A phase is too large if:
+- It creates or modifies more than ~15 files
+- Its requirements would produce more than ~500 lines of new code
+- It covers multiple unrelated concerns
+- An implementer would need to hold too much context to complete it
+
+When a phase is too large:
+1. Split into focused sub-phases, each with a single clear concern
+2. Each sub-phase gets its own implementer → validator flow
+3. Add a phase-wide validator after all sub-phases pass
+4. This keeps each agent's context manageable and avoids compaction
+
+**Why this matters**: Agent context windows are finite. When context fills up, compaction discards earlier information and code quality drops precipitously — the agent loses track of patterns, conventions, and decisions made earlier in the phase. Smaller phases = better code.

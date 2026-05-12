@@ -55,6 +55,16 @@ RULES:
 - Do NOT validate your own work (validator will check)
 - Do NOT run tests yourself
 - Focus only on implementation
+- Do NOT start the dev server
+
+NO-SLOP POLICY (MANDATORY):
+- NO `any`, `as any`, `: any` ANYWHERE
+- NO placeholder code, NO `// TODO`, NO `// FIXME`
+- NO unused imports, NO unused variables — if a variable is not used, it must not exist
+- NO console.log hacks to suppress errors. NO void hacks.
+- Use `import type` for type-only imports (`verbatimModuleSyntax: true`)
+- External imports first, blank line, then local imports
+- ONE query/mutation per file, named export
 
 REPORT BACK:
 When complete, report:
@@ -173,11 +183,22 @@ VALIDATION CHECKLIST:
   [Continue for all requirements...]
 
 □ STEP 5: Code Quality Review
-  □ Follows existing patterns in codebase?
-  □ Proper types (no loose/any types if statically typed)?
-  □ Proper error handling where needed?
-  □ Correct exports (everything needed is exported)?
-  □ Code is readable and well-organized?
+   □ Follows existing patterns in codebase?
+   □ Proper types (no loose/any types if statically typed)?
+   □ Proper error handling where needed?
+   □ Correct exports (everything needed is exported)?
+   □ Code is readable and well-organized?
+
+□ STEP 6: NO-SLOP Policy Enforcement (MANDATORY — be STRINGENT)
+   □ NO `any`, `as any`, `: any` anywhere?
+   □ NO placeholder code, NO `// TODO`, NO `// FIXME`?
+   □ NO unused imports, NO unused variables?
+   □ NO console.log hacks, NO void hacks?
+   □ Type-only imports use `import type`?
+   □ External imports first, blank line, then local imports?
+   □ ONE query/mutation per file, named export?
+   
+   If ANY of these fail, the validation FAILS. No exceptions.
 
 OUTPUT FORMAT:
 
@@ -329,6 +350,15 @@ RULES:
 - If a fix requires adding imports, add them
 - Don't remove working code unnecessarily
 - Make minimal changes - only fix what's broken
+- Fix ALL validator errors at once, not one at a time
+
+NO-SLOP POLICY (MANDATORY — fixes must meet the same quality bar):
+- NO `any`, `as any`, `: any` ANYWHERE
+- NO placeholder code, NO `// TODO`, NO `// FIXME`
+- NO unused imports, NO unused variables
+- Use `import type` for type-only imports
+- External imports first, blank line, then local imports
+- ONE query/mutation per file, named export
 
 REPORT BACK:
 When complete:

@@ -13,7 +13,7 @@ Orchestrate complex development workflows across multiple subagents with strict 
 
 **YOU ARE THE ORCHESTRATOR**: You execute the plan by dispatching subagents through natural language. There is no code running this - you make all decisions about when to dispatch implementers, validators, and fixers based on the workflow described below.
 
-**🚨 CRITICAL**: As the orchestrator, you NEVER write or generate code yourself. You ALWAYS dispatch implementers with the COMPLETE plan requirements and instructions on which part to proceed with.
+**🚨 CRITICAL**: As the orchestrator, you NEVER write or generate code yourself. You NEVER read files to review code. You NEVER execute commands. You NEVER do any task yourself. You ONLY dispatch subagents. Your entire job is coordination — deciding who does what and when.
 
 ## Execution Model
 
@@ -27,28 +27,38 @@ User validates and approves plan
   │
   ▼
 YOU execute each phase:
-  ├─ For each phase:
-  │   ├─ YOU dispatch IMPLEMENTER subagent with COMPLETE requirements
-  │   ├─ IMPLEMENTER runs gatekeeping commands (typecheck, build, lint) BEFORE reporting done
-  │   ├─ YOU dispatch VALIDATOR subagent (different one!) to READ and REVIEW code
+  ├─ For SINGLE-SUB-PHASE phases:
+  │   ├─ YOU dispatch IMPLEMENTER subagent with COMPLETE requirements + NO-SLOP policy
+  │   ├─ IMPLEMENTER runs gatekeeping commands (check-types, build) BEFORE reporting done
+  │   ├─ YOU dispatch VALIDATOR subagent (different agent!) with STRINGENT instructions
   │   ├─ If validation FAILS:
-  │   │   ├─ YOU dispatch FIXER subagent
+  │   │   ├─ YOU dispatch FIXER subagent with ALL validator errors (fix ALL at once)
   │   │   ├─ FIXER runs gatekeeping commands BEFORE reporting done
   │   │   ├─ YOU dispatch VALIDATOR again
   │   │   └─ YOU REPEAT until validation PASSES (up to 3 attempts)
   │   └─ If validation PASSES:
-  │       └─ YOU move to next phase
+  │       └─ Phase complete, move to next
   │
   ├─ For MULTI-SUB-PHASE phases (phase split into multiple sub-phases):
-  │   ├─ Dispatch each sub-phase implementer (parallel or sequential)
-  │   ├─ Each implementer runs gatekeeping commands before reporting done
-  │   ├─ Dispatch PHASE-WIDE validator to read ALL sub-phase code together
-  │   ├─ Phase-wide validator checks integration, shared types, cross-sub-phase coherence
-  │   └─ Fix loop applies to phase-wide validation
+  │   ├─ For EACH sub-phase:
+  │   │   ├─ Dispatch 1 IMPLEMENTER with COMPLETE requirements + NO-SLOP policy
+  │   │   ├─ Implementer runs gatekeeping commands
+  │   │   ├─ Dispatch 1 VALIDATOR right after (per-sub-phase validation)
+  │   │   └─ If FAIL → fixer → validator ... UNTIL PASSES
+  │   └─ When ALL sub-phases pass individual validation:
+  │       ├─ Dispatch PHASE-WIDE VALIDATOR to read ALL sub-phase code together
+  │       ├─ Phase-wide validator checks: integration, shared types, imports, coherence
+  │       └─ Fix loop applies to phase-wide validation
   │
   └─ After all phases:
       └─ YOU report completion to user
 ```
+
+**Key workflow rules**:
+- **1 implementer per sub-phase → 1 validator per sub-phase → phase-wide validator → commit**
+- **Validator right after each sub-phase** — do not batch validations
+- **Fixers fix ALL validator errors at once** — not one at a time
+- **check-types is MANDATORY** — every package created must have it, validators must verify
 
 **Important**: "Automatic" means you execute all phases without stopping to ask the user - not that code runs this. YOU (the orchestrator) make all decisions and dispatch all subagents through natural language, but you NEVER write or generate code yourself.
 
@@ -97,27 +107,32 @@ After all phases complete:
 **Your execution**:
 
 1. **Phase 1: Database Schema**
-    - Dispatch implementer with COMPLETE requirements: "Create src/db/schema.ts with tasks table following these exact requirements [paste complete requirements from plan]"
-    - Implementer creates file
-    - Dispatch validator: "Read and REVIEW src/db/schema.ts to verify all requirements are met, then run type check"
+    - Dispatch implementer with COMPLETE requirements + NO-SLOP policy: "Create src/db/schema.ts with tasks table following these exact requirements [paste complete requirements from plan]"
+    - Implementer creates file, runs check-types + build
+    - Dispatch validator: "Read and REVIEW src/db/schema.ts to verify all requirements are met, enforce NO-SLOP policy, then run check-types"
     - Validator: PASS ✓
 
 2. **Phase 2: Database Client**
-    - Dispatch implementer with COMPLETE requirements: "Create src/db/client.ts using schema, following these exact requirements [paste complete requirements from plan]"
-    - Implementer creates file
-    - Dispatch validator: "ACTUALLY READ src/db/client.ts to verify all requirements are met, check error handling is correct, then run type check and build"
+    - Dispatch implementer with COMPLETE requirements + NO-SLOP policy: "Create src/db/client.ts using schema, following these exact requirements [paste complete requirements from plan]"
+    - Implementer creates file, runs check-types + build
+    - Dispatch validator: "ACTUALLY READ src/db/client.ts, enforce NO-SLOP policy, check error handling, then run check-types and build"
     - Validator: FAIL (missing error handling in connection logic)
-    - Dispatch fixer: "Add error handling per validator report"
+    - Dispatch fixer with ALL validator errors: "Fix all validator errors at once per validator report"
+    - Fixer runs check-types + build
     - Dispatch validator again
     - Validator: PASS ✓
 
-3. **Phase 3: Services (Parallel)**
-    - Dispatch 3 implementers simultaneously with COMPLETE requirements:
+3. **Phase 3: Services (Parallel — each sub-phase gets its own validator)**
+    - Dispatch 3 implementers simultaneously with COMPLETE requirements + NO-SLOP policy:
       - Implementer A: "Create task.service.ts following these exact requirements [paste from plan]"
       - Implementer B: "Create user.service.ts following these exact requirements [paste from plan]"
       - Implementer C: "Create auth.service.ts following these exact requirements [paste from plan]"
-    - Validate each independently (each validator READS the code) → all PASS ✓
-    - Integration check (type check + build all together) → PASS ✓
+    - Each implementer runs check-types + build before reporting done
+    - Dispatch validator RIGHT AFTER each implementer finishes:
+      - Validator A checks task.service.ts → PASS ✓
+      - Validator B checks user.service.ts → PASS ✓
+      - Validator C checks auth.service.ts → PASS ✓
+    - Phase-wide validator reads ALL three services together → checks integration, shared types, imports → PASS ✓
 
 4. **Phase 4: API Routes**
     - Dispatch implementer with COMPLETE requirements: "Create API routes using services, following these exact requirements [paste from plan]"
@@ -179,15 +194,16 @@ This is NOT validation — it is basic quality control. Implementers must:
 
 ### Rule 3: Phase-Wide Validation for Multi-Sub-Phase Phases
 
-**If a phase is split into multiple sub-phases with multiple implementers, a phase-wide validator run is MANDATORY after all sub-phases complete.**
+**If a phase is split into multiple sub-phases with multiple implementers, per-sub-phase validation AND a phase-wide validator run are both MANDATORY.**
 
 Flow for multi-sub-phase phases:
-1. Dispatch all sub-phase implementers (in parallel or sequence)
+1. Dispatch sub-phase implementers (parallel or sequential)
 2. Each implementer runs their own gatekeeping commands
-3. Dispatch individual validators for each sub-phase if desired (optional)
-4. **Dispatch a phase-wide validator** that reads ALL code from ALL sub-phases together
-5. The phase-wide validator checks: integration between sub-phases, shared types, imports, overall coherence
-6. Fix loop applies to the phase-wide validation
+3. **Dispatch 1 validator per sub-phase RIGHT AFTER each implementer finishes** (not batched)
+4. Fix loop per sub-phase until each passes individually
+5. **When ALL sub-phases pass**: dispatch a phase-wide validator that reads ALL code from ALL sub-phases together
+6. The phase-wide validator checks: integration between sub-phases, shared types, imports, overall coherence
+7. Fix loop applies to the phase-wide validation
 
 **Why**: Individual sub-phase validators only check their slice. A phase-wide validator catches integration issues, mismatched interfaces, duplicate code, and inconsistencies across sub-phases that individual validators miss.
 
@@ -208,9 +224,42 @@ For each phase:
 2. Dispatch validator → **ACTUALLY READ AND REVIEW** the code, check requirements, run tests
 3. If validation PASSES → phase complete, continue
 4. If validation FAILS:
-   - Dispatch fixer with validator report
+   - Dispatch fixer with **ALL** validator errors (fixer must fix ALL at once, not one at a time)
    - Dispatch validator again
    - REPEAT until pass or max attempts reached
+
+### Rule 6: NO-SLOP Policy — MANDATORY for Every Dispatch
+
+**Every dispatch to implementers and fixers MUST include the NO-SLOP policy. Every dispatch to validators MUST instruct them to enforce it.**
+
+NO-SLOP rules — all of these are hard requirements, not suggestions:
+- NO `any`, `as any`, `: any` ANYWHERE
+- NO placeholder code, NO `// TODO`, NO `// FIXME`
+- NO unused imports, NO unused variables — if a variable is not used, it must not exist
+- NO console.log hacks to suppress errors. NO void hacks.
+- Use `import type` for type-only imports (`verbatimModuleSyntax: true`)
+- External imports first, blank line, then local imports
+- ONE query/mutation per file, named export
+- Do NOT start the dev server
+
+Validators must be **STRINGENT**. Only production-quality code passes. Any slop is rejected.
+
+### Rule 7: Phase Sizing — Must Fit in Agent Context
+
+**Every phase must fit comfortably inside a single agent's context window. If a phase is too large, it MUST be split into sub-phases.**
+
+Signs a phase is too large:
+- More than ~15 files to create or modify
+- Requirements that would produce more than ~500 lines of new code
+- Multiple unrelated concerns crammed into one phase
+
+When a phase is too large:
+1. Split it into sub-phases, each with a clear, focused scope
+2. Each sub-phase gets its own implementer → validator → fixer loop
+3. After all sub-phases pass, a phase-wide validator checks integration
+4. This avoids context compaction which degrades code quality
+
+**Why**: When an agent's context fills up, compaction kicks in and quality drops precipitously. Large phases produce worse code because the agent loses track of earlier context. Smaller, focused phases produce better code.
 
 ## Dispatching Subagents
 
@@ -230,15 +279,24 @@ ALWAYS provide:
 3. **List of files to read** for context
 4. **List of files to create/modify**
 5. **Clear boundaries** - what they should and should NOT do
-6. **Instruction to run gatekeeping commands** (typecheck, build) and fix any errors BEFORE reporting completion
+6. **Instruction to run gatekeeping commands** (check-types, build) and fix any errors BEFORE reporting completion
+7. **The NO-SLOP policy** (see Rule 6) — paste it verbatim
 
 ### When dispatching validators:
 
 ALWAYS provide:
 1. **Files that were created/modified** (complete list)
 2. **The COMPLETE requirements section from the plan**
-3. **Validation criteria** (typecheck, build, code review)
+3. **Validation criteria** (check-types, build, code review)
 4. **Instruction to ACTUALLY READ the code**, not just run commands
+5. **Instruction to enforce the NO-SLOP policy** — validators must be STRINGENT, only production code passes
+
+### When dispatching fixers:
+
+ALWAYS provide:
+1. **ALL validator errors at once** — fixers must fix everything, not one at a time
+2. **The NO-SLOP policy** — fixes must meet the same quality bar
+3. **Instruction to run gatekeeping commands** before reporting done
 
 **Example dispatch** (see templates for full format):
 
@@ -253,6 +311,14 @@ Requirements from plan:
 Read: src/db/schema.ts (to understand schema)
 Create: src/db/client.ts
 
+NO-SLOP POLICY (MANDATORY):
+- NO `any`, `as any`, `: any` ANYWHERE
+- NO placeholder code, NO `// TODO`, NO `// FIXME`
+- NO unused imports, NO unused variables
+- Use `import type` for type-only imports
+- External imports first, blank line, then local imports
+
+Run check-types and build before reporting done.
 Do NOT validate your work - a validator will check it.
 Report when complete.
 ```
@@ -441,23 +507,29 @@ Validation should be adapted to the project's language and tooling, not limited 
 
 **🚨 CRITICAL RULES - READ CAREFULLY**:
 
-1. **YOU (orchestrator) MUST NEVER WRITE OR GENERATE CODE**
+1. **YOU (orchestrator) MUST NEVER WRITE, READ, OR EXECUTE ANYTHING**
+   - You ONLY dispatch subagents. No coding, no reading files, no running commands.
    - Always dispatch implementers with COMPLETE plan requirements
    - Give clear instructions on which part/phase to work on
-   - Your job is coordination, not coding
 
 2. **Validators MUST ACTUALLY READ AND VALIDATE THE CODE**
    - Reading code line-by-line is REQUIRED
    - Running commands alone is NOT sufficient
    - Manual verification of each requirement is mandatory
 
-3. **Implementers MUST run gatekeeping commands** (typecheck, build) on their own work BEFORE reporting done. No subagent should hand back broken code.
+3. **NO-SLOP POLICY is MANDATORY** — included in every implementer/fixer dispatch, enforced by every validator. No `any`, no TODOs, no unused imports, no placeholder code. Only production-quality code passes.
 
-4. **Multi-sub-phase phases MUST have a phase-wide validator** that reads ALL code from ALL sub-phases together, checking integration and coherence.
+4. **Implementers MUST run gatekeeping commands** (check-types, build) on their own work BEFORE reporting done. Every package created must have check-types configured.
 
-5. **Strict role separation**: implementer ≠ validator ≠ fixer
-6. **Auto-retry fixes** up to 3 validation attempts per phase
-7. **Halt only** on max retry failures or environment issues
+5. **Multi-sub-phase phases**: 1 implementer → 1 validator per sub-phase RIGHT AFTER → phase-wide validator when all pass.
+
+6. **Fixers fix ALL errors at once** — not one at a time. If the validator lists 5 issues, the fixer fixes all 5.
+
+7. **Phases must fit in agent context** — if too large, split into sub-phases. Compaction degrades quality.
+
+8. **Strict role separation**: implementer ≠ validator ≠ fixer
+9. **Auto-retry fixes** up to 3 validation attempts per phase
+10. **Halt only** on max retry failures or environment issues
 
 ## Reference Documentation
 
