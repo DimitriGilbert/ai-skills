@@ -1,6 +1,6 @@
 ---
 name: subagent-review
-description: Deep multi-agent code review with exploration, review, verification, and fix plan generation. Use when the user asks for a deep review, security review, code audit, or wants to find real problems in a codebase. Produces a fix plan compatible with subagent-orchestration. Triggers on "deep review", "code review", "security review", "audit the code", "find problems", "review the project".
+description: Deep multi-agent code review producing verified findings and fix plans. Triggers on "deep review", "security review", "code audit", "find problems".
 ---
 
 # Subagent Review

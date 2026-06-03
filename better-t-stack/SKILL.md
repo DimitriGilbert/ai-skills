@@ -1,6 +1,6 @@
 ---
 name: better-t-stack
-description: Expert guidance for using the Better-T-Stack CLI to scaffold type-safe TypeScript projects. Use when creating new projects, adding features to existing projects, or troubleshooting compatibility issues.
+description: Scaffold type-safe TypeScript projects with the Better-T-Stack CLI — new projects, features, or troubleshooting.
 ---
 
 # Better-T-Stack

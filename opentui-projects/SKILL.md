@@ -1,6 +1,6 @@
 ---
 name: opentui-projects
-description: Expert assistance for OpenTUI project scaffolding, templates, examples, and learning paths. Use for quick start, project templates, component library, and best practices.
+description: OpenTUI project scaffolding, templates, examples, component library, and best practices.
 ---
 
 # OpenTUI Projects

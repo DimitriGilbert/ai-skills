@@ -1,6 +1,6 @@
 ---
 name: subagent-planificator
-description: Collaborative multi-agent planning with iterative deliberation. Use when creating complex plans that benefit from multiple specialist perspectives, cross-review, and consensus-building through discussion rounds.
+description: Collaborative multi-agent planning with specialist cross-review and iterative consensus-building through discussion rounds.
 ---
 
 # Subagent Planificator

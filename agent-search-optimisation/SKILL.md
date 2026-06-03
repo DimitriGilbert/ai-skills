@@ -1,6 +1,6 @@
 ---
 name: agent-search-optimisation
-description: Audit and plan website optimisation for AI agents, AI search engines, answer engines, and LLM-based retrieval. Use when a user asks to optimise a website for agents, AI SEO, AEO, GEO, LLM discoverability, ChatGPT/Perplexity/Gemini visibility, llms.txt, structured data, sitemaps, or machine-readable content.
+description: Audit and plan website optimisation for AI agents, AI search, LLM discoverability, llms.txt, structured data, and sitemaps.
 ---
 
 # Agent Search Optimisation

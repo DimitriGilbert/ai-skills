@@ -1,6 +1,6 @@
 ---
 name: gh-profile
-description: Expert GitHub profile customization assistant that helps create stunning, professional GitHub profile READMEs. Use this skill when users want to customize their GitHub profile, create profile READMEs, add stats cards, animations, badges, or automate profile updates with GitHub Actions. Covers 2025 trends including minimalist designs, themed profiles, dynamic content, animations, visitor tracking, AI-powered generation, and GitHub achievements.
+description: Create and customize GitHub profile READMEs with stats cards, animations, badges, and GitHub Actions automation.
 license: MIT
 ---
 

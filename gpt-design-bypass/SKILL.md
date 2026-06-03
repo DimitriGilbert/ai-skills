@@ -1,6 +1,6 @@
 ---
 name: gpt-design-bypass
-description: Route design tasks to a competent model via opencode or claude CLI instead of Codex's default. Use when Codex needs to produce or evaluate UI design, visual styling, CSS, component layout, or any frontend visual output. Triggers on "design", "style", "UI", "CSS", "layout", "visual", "make it look", "beautify", "redesign", "theme".
+description: Route design tasks to a competent model via opencode or claude CLI. Triggers on "design", "style", "UI", "CSS", "layout", "visual", "beautify", "redesign".
 ---
 
 # GPT Design Bypass

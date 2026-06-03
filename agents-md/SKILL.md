@@ -1,6 +1,6 @@
 ---
 name: agents-md
-description: Expert AGENTS.md file assistant. Use when users want to create, verify, or improve AGENTS.md files. Helps with creating minimal, focused AGENTS.md files following progressive disclosure principles, verifying existing files for issues (bloat, contradictions, stale info), and refactoring bloated files.
+description: Create, verify, and improve AGENTS.md files. Minimal, focused, progressive disclosure. Fixes bloat, contradictions, stale info.
 ---
 
 This skill provides expert guidance for creating, verifying, and improving AGENTS.md files - the open standard format for guiding AI coding agents.

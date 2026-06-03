@@ -1,6 +1,6 @@
 ---
 name: opencode
-description: Expert guide for USING opencode CLI and web server. Covers non-interactive mode (opencode run), headless server (opencode serve), web interface (opencode web), attaching to servers, session management, model/provider config, and all CLI subcommands. Triggers on opencode commands, CLI usage, non-interactive AI coding, web server setup.
+description: Guide for opencode CLI and web server — non-interactive mode, headless server, sessions, model config, and all CLI subcommands.
 ---
 
 # OpenCode CLI & Web Server Guide

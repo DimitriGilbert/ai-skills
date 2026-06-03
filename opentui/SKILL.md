@@ -1,6 +1,6 @@
 ---
 name: opentui
-description: Expert assistance for OpenTUI core development using the imperative API with vanilla TypeScript. Use for component creation, layout management, input handling, styling, animations, and debugging.
+description: OpenTUI core development with vanilla TypeScript imperative API — components, layout, input, styling, animations, debugging.
 ---
 
 # OpenTUI Core Development

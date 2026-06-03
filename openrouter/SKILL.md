@@ -1,6 +1,6 @@
 ---
 name: openrouter
-description: Expert OpenRouter API assistant for AI agents. Use when making API calls to OpenRouter's unified API for 400+ AI models. Covers chat completions, streaming, tool calling, structured outputs, web search, embeddings, multimodal inputs, model selection, routing, and error handling.
+description: OpenRouter unified API for 400+ models — chat completions, streaming, tool calling, structured output, embeddings, multimodal.
 ---
 
 # OpenRouter API for AI Agents

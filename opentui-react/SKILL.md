@@ -1,6 +1,6 @@
 ---
 name: opentui-react
-description: Expert assistance for OpenTUI with React. Use for React components, hooks (useKeyboard, useRenderer, useTimeline), JSX patterns, state management, forms, and testing.
+description: OpenTUI with React — components, hooks (useKeyboard, useRenderer, useTimeline), JSX patterns, state, forms, testing.
 ---
 
 # OpenTUI React Integration

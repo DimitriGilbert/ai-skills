@@ -1,6 +1,6 @@
 ---
 name: deep-agent-review
-description: Multi-agent deep code review orchestration. Use when you need an exhaustive, multi-perspective code review with area-specific specialists, progressive findings, verified claims, and actionable remediation plans.
+description: Exhaustive multi-agent code review with area-specific specialists, verified findings, and actionable remediation plans.
 ---
 
 # Deep Agent Review

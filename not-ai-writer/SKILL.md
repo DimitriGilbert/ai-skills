@@ -1,6 +1,6 @@
 ---
 name: not-ai-writer
-description: Expert guide for creating authentic, human-sounding content that avoids AI-generated writing patterns. Use when reviewing, editing, or creating content to ensure it sounds genuinely human and avoids AI detection markers.
+description: Create and edit content to sound authentically human, avoiding AI detection markers and generated writing patterns.
 license: MIT
 ---
 

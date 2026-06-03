@@ -1,6 +1,6 @@
 ---
 name: awesome-creator
-description: Generate Awesome list README files following official sindresorhus/awesome standards. Use when creating, updating, or validating Awesome lists for GitHub repositories.
+description: Generate and validate Awesome list READMEs following sindresorhus/awesome standards.
 license: CC0-1.0
 ---
 

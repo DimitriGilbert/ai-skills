@@ -1,6 +1,6 @@
 ---
 name: convex
-description: Expert Convex development assistant. Use when users want to build full-stack TypeScript apps with Convex - including setup, server functions (queries/mutations/actions), database schema, auth, file storage, real-time features, frontend integration (React, Next.js, Vue), testing, or deployment.
+description: Build full-stack TypeScript apps with Convex — server functions, schema, auth, file storage, real-time, frontend integration, testing, deployment.
 ---
 
 This skill provides expert guidance for building applications with Convex - the full-stack reactive database platform.

@@ -1,6 +1,6 @@
 ---
 name: the-council
-description: Expert council facilitation for complex decision-making. Use when you need multiple specialist perspectives on a subject, requiring thorough analysis, research-backed opinions, and structured deliberation to reach consensus or properly present diverging views.
+description: Facilitate structured deliberation with multiple specialist subagents to reach consensus on complex decisions.
 ---
 
 This skill facilitates structured deliberation by summoning a council of specialist subagents to analyze complex questions from multiple perspectives, conduct independent research, and reach informed decisions through consensus or structured debate.
