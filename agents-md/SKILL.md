@@ -113,6 +113,37 @@ This package is a Node.js GraphQL API using Prisma.
 Follow docs/API_CONVENTIONS.md for API design patterns.
 ```
 
+## Content Recommendations
+
+When creating or improving AGENTS.md content, recommend project-specific guidance that promotes code quality. Keep these in the root file only if they apply to every task; otherwise link to focused progressive disclosure files such as `docs/QUALITY.md`, `docs/TYPESCRIPT.md`, `docs/TESTING.md`, `docs/ARCHITECTURE.md`, or `docs/FRONTEND.md`.
+
+### Code Quality
+
+- Stay DRY: reuse existing utilities, components, and patterns instead of duplicating logic.
+- Do not reinvent the wheel: prefer established project dependencies and existing modules when they fit.
+- Prefer modular architecture with small, cohesive units and clear boundaries.
+- Do not create god components, god functions, or oversized files; split responsibilities when code becomes hard to reason about.
+- Prioritize quality over speed; a task is not complete if it leaves avoidable design, type, or test debt.
+
+### Type Safety
+
+- In typed languages, maintain full type safety.
+- Do not use `any`, `as any`, or `: any`; use precise types, generics, discriminated unions, or schema-derived types instead.
+- Framework-generated files are exempt when the framework owns the generated typing.
+
+### Validation & Testing
+
+- Typecheck, build, and relevant tests must pass when work is done; if they do not pass, the work is not done.
+- If verification cannot be run, document why and what remains unverified.
+- Encourage comprehensive testing for meaningful behavior, including edge cases and regressions.
+- Do not run the dev server when the user already runs it; use build, typecheck, tests, and static checks instead.
+
+### Frontend Architecture
+
+- Build frontend UI from small, reusable components with clear responsibilities, then compose them into larger sections and pages.
+- Prefer reusable, focused components over large one-off components.
+- Include global error boundaries for frontend applications so unexpected UI failures degrade safely.
+
 ## Templates
 
 ### Minimal Single-Package AGENTS.md
@@ -214,6 +245,7 @@ Look for conflicting instructions:
 - [ ] Has one-sentence project description
 - [ ] Specifies package manager (if not npm)
 - [ ] Links to progressive disclosure files
+- [ ] Includes or links to code-quality guidance covering architecture, type safety, testing, and frontend expectations when applicable
 - [ ] Uses conversational tone (not "ALWAYS", "MUST", "NEVER")
 - [ ] Describes capabilities, not structure
 
@@ -261,11 +293,13 @@ I want you to refactor my AGENTS.md file to follow progressive disclosure princi
 **Suggested structure:**
 ```
 docs/
+├── QUALITY.md          # Cross-cutting code quality expectations
 ├── TYPESCRIPT.md       # TypeScript patterns and conventions
 ├── TESTING.md          # Testing strategies and frameworks
+├── FRONTEND.md         # Component architecture, reuse, error boundaries
 ├── API_CONVENTIONS.md  # API design patterns (if applicable)
 ├── ARCHITECTURE.md     # High-level architecture (capabilities, not file paths)
-└── Git worklow items → CONTRIBUTING.md
+└── Git workflow items → CONTRIBUTING.md
 ```
 
 **Each file should:**
