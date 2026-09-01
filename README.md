@@ -66,6 +66,7 @@ AI skills are reusable prompt packages that extend AI assistants' capabilities w
 ## Workflow Orchestration
 
 - **[subagent-orchestration](subagent-orchestration/)** - Orchestrate multi-phase development workflows with strict role separation between implementers and validators. Automatically executes plans with separate subagents for implementation, validation, and fixing with auto-retry loops.
+- **[escouade](escouade/)** - Field a mission-scoped squad of background agents with a Forge that crafts teammate charters, peer-to-peer SendMessage coordination around a shared task list, a strong-model/cheap-model cascade, and rotation of drifting teammates into refined successors.
 
 ## Contributing
 
